@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react";
 
 /* ==========================================================================
    DINHA – RECEITAS AFETIVAS · landing page
-   Direção criativa: "Caderno de receitas da vó"
+   Direção criativa: caderno da vó, com fotos reais dos produtos
 
    Implementação
    - Layout com utilitários do Tailwind. Tokens da marca e movimento ficam no
@@ -63,7 +63,7 @@ const MENU = [
     aba: "Bolos tradicionais",
     titulo: "Bolos tradicionais",
     nota: "os clássicos de toda tarde",
-    ilustracao: "fatia",
+    foto: { src: "/fotos/bolo-com-cobertura.jpg", legenda: "bolo caseiro com cobertura" },
     itens: [
       { nome: "Bolo de laranja" },
       { nome: "Bolo de limão" },
@@ -77,7 +77,7 @@ const MENU = [
     aba: "Especiais e datas",
     titulo: "Bolos especiais e comemorações",
     nota: "pra festejar junto",
-    ilustracao: "confeitos",
+    // PENDENTE: foto real do bolo de confeitos
     itens: [
       { nome: "Bolo de confeitos com Fini" },
       { nome: "Bolos de Natal", detalhe: "e de outras datas comemorativas" },
@@ -90,7 +90,7 @@ const MENU = [
     aba: "Comidinhas",
     titulo: "Comidinhas e salgados",
     nota: "pro almoço rápido ou o lanche",
-    ilustracao: "torta",
+    // PENDENTE: foto real da torta de frango com salada
     itens: [
       { nome: "Torta de frango com salada", detalhe: "boa pedida pro almoço" },
       { nome: "Tortas recheadas" },
@@ -98,21 +98,26 @@ const MENU = [
     ],
   },
   {
-    id: "cafes",
-    aba: "Cafés e doces",
-    titulo: "Cafés e sobremesas",
+    id: "doces",
+    aba: "Doces e cafés",
+    titulo: "Doces e cafés",
     nota: "coado na hora, servido na mesa",
-    ilustracao: "xicara",
-    itens: [{ nome: "Café coado na mesa" }, { nome: "Arroz doce caseiro" }],
+    foto: { src: "/fotos/copos-de-sobremesa.jpg", legenda: "copos de sobremesa da Dinha" },
+    itens: [
+      { nome: "Copos de sobremesa" },
+      { nome: "Brownie" },
+      { nome: "Arroz doce caseiro" },
+      { nome: "Café coado na mesa" },
+    ],
   },
 ];
 
 // Vídeos da Dinha (arquivos em public/videos)
-const VIDEOS = [
-  { id: "bolo", src: "/videos/bolo-com-cobertura.mp4", capa: "/videos/bolo-com-cobertura.jpg", legenda: "bolo caseiro com cobertura" },
-  { id: "brownie", src: "/videos/brownie.mp4", capa: "/videos/brownie.jpg", legenda: "brownie" },
-  { id: "copos", src: "/videos/copos-de-sobremesa.mp4", capa: "/videos/copos-de-sobremesa.jpg", legenda: "copos de sobremesa" },
-];
+const VIDEOS = {
+  bolo: { src: "/videos/bolo-com-cobertura.mp4", capa: "/videos/bolo-com-cobertura.jpg", legenda: "bolo caseiro com cobertura" },
+  copos: { src: "/videos/copos-de-sobremesa.mp4", capa: "/videos/copos-de-sobremesa.jpg", legenda: "copos de sobremesa" },
+  brownie: { src: "/videos/brownie.mp4", capa: "/videos/brownie.jpg", legenda: "brownie" },
+};
 
 const AVALIACOES = [
   "Lugar tranquilo, decoração maravilhosa, café coado na mesa, uma delícia!",
@@ -120,27 +125,8 @@ const AVALIACOES = [
   "Possui salão onde são servidas porções generosas de bolos e tortas.",
 ];
 
-// Cores usadas dentro das ilustrações SVG (espelham os tokens do CSS)
-const COR = {
-  papel: "#FFF9EC",
-  tinta: "#3B3423",
-  oliva: "#7A8A62",
-  olivaEscuro: "#4A5636",
-  olivaClaro: "#DCE3C8",
-  canela: "#8A5A34",
-  grifo: "#F2C94C",
-  massa: "#EBCB8B",
-  massaEscura: "#DDAF68",
-  cobertura: "#FBEFC8",
-  cafe: "#6B4A33",
-  chocolate: "#5A3A2A",
-  recheio: "#C0643E",
-  rosa: "#D98AA0",
-  azul: "#6F94BF",
-  crosta: "#D9A95B",
-  crostaClara: "#E8BE72",
-  frango: "#F3E3B5",
-};
+// Cores usadas no SVG das estrelas (espelham os tokens do CSS)
+const COR = { tinta: "#3B3423", grifo: "#F2C94C" };
 
 /* ---------- Horário em São Paulo ---------- */
 
@@ -268,123 +254,7 @@ const IconePlay = () => (
 );
 const NovaAba = () => <span className="sr-only"> (abre em nova aba)</span>;
 
-/* ---------- Ilustrações (provisórias; PENDENTE trocar pelas da marca) ---------- */
-
-function Xicara({ className = "", animada = false }) {
-  return (
-    <svg viewBox="0 0 120 130" className={className} aria-hidden="true" focusable="false">
-      {animada && (
-        <g className="vapor" fill="none" stroke={COR.tinta} strokeWidth="2.5" strokeLinecap="round" opacity=".5">
-          <path d="M46 42c-7-7 7-11 0-19" />
-          <path d="M60 40c-7-8 7-12 0-21" />
-          <path d="M74 42c-7-7 7-11 0-19" />
-        </g>
-      )}
-      <ellipse cx="60" cy="116" rx="46" ry="8" fill={COR.papel} stroke={COR.tinta} strokeWidth="3" />
-      <path d="M90 66c16-2 18 22 0 22" fill="none" stroke={COR.tinta} strokeWidth="3.5" strokeLinecap="round" />
-      <path d="M28 56h64v18c0 19-14 34-32 34S28 93 28 74z" fill={COR.papel} stroke={COR.tinta} strokeWidth="3" strokeLinejoin="round" />
-      <path d="M31 72c9 4 19 4 29 0s20-4 29 0" fill="none" stroke={COR.oliva} strokeWidth="3" strokeLinecap="round" />
-      <ellipse cx="60" cy="56" rx="32" ry="5" fill={COR.cafe} stroke={COR.tinta} strokeWidth="3" />
-      <path d="M60 95c-3-2-6-4-6-7a3 3 0 0 1 6-1 3 3 0 0 1 6 1c0 3-3 5-6 7z" fill={COR.recheio} />
-    </svg>
-  );
-}
-
-function FatiaBolo({ className = "" }) {
-  return (
-    <svg viewBox="0 28 150 92" className={className} aria-hidden="true" focusable="false">
-      <ellipse cx="75" cy="106" rx="64" ry="10" fill={COR.papel} stroke={COR.tinta} strokeWidth="3" />
-      {/* lateral esquerda e direita da cunha */}
-      <path d="M18 48 66 76v28L18 76z" fill={COR.massaEscura} stroke={COR.tinta} strokeWidth="3" strokeLinejoin="round" />
-      <path d="M66 76 132 42v28L66 104z" fill={COR.massa} stroke={COR.tinta} strokeWidth="3" strokeLinejoin="round" />
-      {/* recheio */}
-      <path d="M18 62 66 90 132 56" fill="none" stroke={COR.recheio} strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" />
-      {/* cobertura no topo e escorrendo pelas bordas */}
-      <path d="M18 48 132 42 66 76z" fill={COR.cobertura} stroke={COR.tinta} strokeWidth="3" strokeLinejoin="round" />
-      <path d="M34 57.3c0 7 6 8 6 3.5M50 66.7c0 6 6 7 6 3.5M86 65.7c0 7 6 5 6-3.1M110 53.3c0 6 6 4 6-3.1" fill={COR.cobertura}
-        stroke={COR.tinta} strokeWidth="2.5" strokeLinecap="round" />
-    </svg>
-  );
-}
-
-function BoloConfeitos({ className = "" }) {
-  const confeitos = [
-    [48, 46, COR.recheio, 20], [62, 40, COR.oliva, -30], [78, 44, COR.grifo, 60], [92, 50, COR.rosa, 10],
-    [70, 55, COR.azul, -50], [55, 56, COR.grifo, 35], [86, 38, COR.rosa, -15], [101, 44, COR.oliva, 45],
-    [40, 52, COR.azul, 70], [34, 74, COR.recheio, 0], [56, 84, COR.grifo, 0], [84, 84, COR.oliva, 0],
-    [106, 76, COR.rosa, 0],
-  ];
-  return (
-    <svg viewBox="0 0 140 125" className={className} aria-hidden="true" focusable="false">
-      <ellipse cx="70" cy="110" rx="62" ry="9" fill={COR.papel} stroke={COR.tinta} strokeWidth="3" />
-      <path d="M20 48v42c0 10 22 17 50 17s50-7 50-17V48" fill={COR.massa} stroke={COR.tinta} strokeWidth="3" />
-      <ellipse cx="70" cy="48" rx="50" ry="15" fill={COR.chocolate} stroke={COR.tinta} strokeWidth="3" />
-      {confeitos.map(([x, y, c, r], i) => (
-        <rect key={i} x={x - 4.5} y={y - 2} width="9" height="4" rx="2" fill={c} transform={`rotate(${r} ${x} ${y})`} />
-      ))}
-    </svg>
-  );
-}
-
-function TortaFrango({ className = "" }) {
-  return (
-    <svg viewBox="0 0 150 120" className={className} aria-hidden="true" focusable="false">
-      <ellipse cx="78" cy="104" rx="66" ry="10" fill={COR.papel} stroke={COR.tinta} strokeWidth="3" />
-      <path d="M112 88c6-14 22-12 24 0-8 6-18 6-24 0z" fill={COR.oliva} stroke={COR.tinta} strokeWidth="2.5" strokeLinejoin="round" />
-      <path d="M116 96c10-10 24-4 22 6-8 3-16 1-22-6z" fill={COR.olivaClaro} stroke={COR.tinta} strokeWidth="2.5" strokeLinejoin="round" />
-      <path d="M18 52 42 70v28L18 82z" fill={COR.crosta} stroke={COR.tinta} strokeWidth="3" strokeLinejoin="round" />
-      <path d="M42 70 120 50v28L42 98z" fill={COR.frango} stroke={COR.tinta} strokeWidth="3" strokeLinejoin="round" />
-      <path d="M43.5 90.5 118.5 71v6L43.5 96.5z" fill={COR.crosta} />
-      <circle cx="62" cy="80" r="3" fill={COR.massaEscura} />
-      <circle cx="84" cy="73" r="3.4" fill={COR.massaEscura} />
-      <circle cx="104" cy="68" r="2.8" fill={COR.massaEscura} />
-      <path d="M18 52 98 32l22 18-78 20z" fill={COR.crostaClara} stroke={COR.tinta} strokeWidth="3" strokeLinejoin="round" />
-      <path d="M33 52 101 35M40 58l66-17M46 64l64-16" stroke={COR.canela} strokeWidth="2" strokeLinecap="round" opacity=".55" />
-    </svg>
-  );
-}
-
-function Raminho({ className = "" }) {
-  const folhas = [[130, -1], [112, 1], [92, -1], [72, 1], [52, -1], [32, 1]];
-  return (
-    <svg viewBox="0 0 120 160" className={className} aria-hidden="true" focusable="false">
-      <path d="M58 156C57 110 62 60 76 8" fill="none" stroke={COR.olivaEscuro} strokeWidth="3" strokeLinecap="round" />
-      {folhas.map(([y, lado], i) => {
-        const x = 58 + ((156 - y) / 148) * 16;
-        const cx = x + lado * 15;
-        return (
-          <ellipse key={i} cx={cx} cy={y} rx="16" ry="6.5" transform={`rotate(${lado * -32} ${cx} ${y})`}
-            fill={COR.olivaClaro} stroke={COR.olivaEscuro} strokeWidth="2.5" />
-        );
-      })}
-    </svg>
-  );
-}
-
-function PataFormas() {
-  return (
-    <>
-      <ellipse cx="20" cy="26" rx="8.5" ry="7.5" />
-      <ellipse cx="9.5" cy="15.5" rx="3.4" ry="4.4" transform="rotate(-20 9.5 15.5)" />
-      <ellipse cx="16" cy="9" rx="3.4" ry="4.6" />
-      <ellipse cx="24" cy="9" rx="3.4" ry="4.6" />
-      <ellipse cx="30.5" cy="15.5" rx="3.4" ry="4.4" transform="rotate(20 30.5 15.5)" />
-    </>
-  );
-}
-
-function Pegadas({ className = "" }) {
-  const passos = [[24, 92, 70], [76, 66, 62], [128, 86, 74], [180, 56, 64], [232, 76, 76], [286, 44, 66]];
-  return (
-    <svg viewBox="0 0 320 120" className={className} aria-hidden="true" focusable="false" fill="currentColor">
-      {passos.map(([x, y, r], i) => (
-        <g key={i} transform={`translate(${x} ${y}) rotate(${r}) scale(1.05) translate(-20 -20)`}>
-          <PataFormas />
-        </g>
-      ))}
-    </svg>
-  );
-}
+/* ---------- Estrelas da avaliação ---------- */
 
 function Estrelas({ valor, className = "" }) {
   const forma = "M12 2.5l2.9 6.1 6.6.8-4.9 4.6 1.3 6.6L12 17.3 6.1 20.6l1.3-6.6L2.5 9.4l6.6-.8z";
@@ -408,7 +278,6 @@ function Estrelas({ valor, className = "" }) {
   );
 }
 
-const ILUSTRACOES_MENU = { fatia: FatiaBolo, confeitos: BoloConfeitos, torta: TortaFrango, xicara: Xicara };
 
 /* ---------- Peças de interface ---------- */
 
@@ -476,6 +345,17 @@ function VideoFoto({ src, capa, legenda, className = "" }) {
         </button>
       </div>
       <figcaption className="mao">{legenda}</figcaption>
+    </figure>
+  );
+}
+
+function Foto({ src, legenda, className = "" }) {
+  return (
+    <figure className={`foto ${className}`}>
+      <div className="foto-quadro">
+        <img src={src} alt={legenda} loading="lazy" decoding="async" />
+      </div>
+      <figcaption className="mao" aria-hidden="true">{legenda}</figcaption>
     </figure>
   );
 }
@@ -553,48 +433,27 @@ function Cabecalho() {
 function Hero({ status }) {
   return (
     <section id="inicio" className="hero">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 md:px-8 pt-6 md:pt-14 pb-24 md:pb-28">
-        <div className="folha-wrap">
-          <Raminho className="hero-raminho" />
-          <article className="folha" aria-labelledby="titulo-hero">
-            <span className="fita fita-esq" aria-hidden="true" />
-            <span className="fita fita-dir" aria-hidden="true" />
-            <p className="mao folha-sobrescrito">receita da casa</p>
-            <hr className="regua-dupla" />
-            <h1 id="titulo-hero" className="t-hero">O aconchego e o sabor da casa da vó em Osasco</h1>
-
-            <div className="grid md:grid-cols-12 gap-10 md:gap-10 mt-10 md:mt-14">
-              <div className="md:col-span-5">
-                <h2 className="rotulo-receita">Ingredientes</h2>
-                <ul className="ingredientes">
-                  <li>Café coado na hora</li>
-                  <li>Bolo caseiro fresquinho</li>
-                  <li>Arroz doce e outras receitas afetivas</li>
-                  <li>Um cantinho tranquilo, onde o pet também entra</li>
-                </ul>
-              </div>
-              <div className="md:col-span-7">
-                <h2 className="rotulo-receita">Modo de fazer</h2>
-                <ol className="modo">
-                  <li>
-                    Venha de terça a sexta, das 9h às 18h, ou no sábado, das 9h às 17h.
-                    <StatusAberto status={status} className="mt-3" />
-                  </li>
-                  <li>Peça um café coado na mesa e escolha o seu bolo.</li>
-                  <li>Para levar pra casa ou pra festa, faça uma encomenda.</li>
-                </ol>
-                <div className="mt-8 flex flex-wrap gap-3">
-                  <a className="btn btn-primario btn-grande" href={CARDAPIO_URL} target="_blank" rel="noopener noreferrer">
-                    Ver cardápio digital
-                    <NovaAba />
-                  </a>
-                  <a className="btn btn-contorno btn-grande" href="#encomendas">Fazer encomenda</a>
-                </div>
-              </div>
-            </div>
-          </article>
-          <FatiaBolo className="hero-fatia" />
-          <Xicara className="hero-xicara" animada />
+      <div className="max-w-6xl mx-auto px-5 md:px-8 pt-8 md:pt-16 pb-20 md:pb-28 grid md:grid-cols-12 gap-12 md:gap-10 items-center">
+        <div className="md:col-span-6 hero-texto">
+          <h1 className="t-hero">O aconchego e o sabor da casa da vó em Osasco</h1>
+          <p className="hero-sub">
+            Café coado na hora, bolo caseiro fresquinho e receitas afetivas, num cantinho tranquilo da Cidade São
+            Francisco. Pode trazer o pet.
+          </p>
+          <div className="mt-8 flex flex-wrap gap-3">
+            <a className="btn btn-primario btn-grande" href={CARDAPIO_URL} target="_blank" rel="noopener noreferrer">
+              Ver cardápio digital
+              <NovaAba />
+            </a>
+            <a className="btn btn-contorno btn-grande" href="#encomendas">Fazer encomenda</a>
+          </div>
+          <div className="hero-horario">
+            <StatusAberto status={status} />
+            <p>Terça a sexta, das 9h às 18h. Sábado, das 9h às 17h.</p>
+          </div>
+        </div>
+        <div className="md:col-span-6">
+          <VideoFoto className="hero-foto" {...VIDEOS.bolo} />
         </div>
       </div>
     </section>
@@ -621,10 +480,8 @@ function Sobre() {
         </div>
         <div className="md:col-span-7">
           <div className="galeria">
-            {VIDEOS.map((v, i) => (
-              <VideoFoto key={v.id} src={v.src} capa={v.capa} legenda={v.legenda}
-                className={["gal-grande", "gal-a", "gal-b"][i]} />
-            ))}
+            <VideoFoto className="gal-grande" {...VIDEOS.copos} />
+            <VideoFoto className="gal-a" {...VIDEOS.brownie} />
           </div>
         </div>
       </div>
@@ -636,7 +493,6 @@ function Cardapio({ onEncomendar }) {
   const [ativa, setAtiva] = useState(0);
   const abas = useRef([]);
   const categoria = MENU[ativa];
-  const Ilustracao = ILUSTRACOES_MENU[categoria.ilustracao];
 
   function aoTeclar(e, i) {
     const mapa = { ArrowRight: (i + 1) % MENU.length, ArrowLeft: (i - 1 + MENU.length) % MENU.length, Home: 0, End: MENU.length - 1 };
@@ -670,7 +526,7 @@ function Cardapio({ onEncomendar }) {
 
           <div role="tabpanel" id={`painel-${categoria.id}`} aria-labelledby={`aba-${categoria.id}`} tabIndex={0} className="caderno">
             <div key={categoria.id} className="pagina grid md:grid-cols-12 gap-x-6">
-              <div className="md:col-span-8">
+              <div className={categoria.foto ? "md:col-span-7" : "md:col-span-12"}>
                 <h3 className="pagina-titulo">{categoria.titulo}</h3>
                 <p className="pagina-nota mao">{categoria.nota}</p>
                 <ul className="itens">
@@ -693,9 +549,11 @@ function Cardapio({ onEncomendar }) {
                   )}
                 </div>
               </div>
-              <div className="md:col-span-4 pagina-ilustra" aria-hidden="true">
-                <Ilustracao className="pagina-desenho" />
-              </div>
+              {categoria.foto && (
+                <div className="md:col-span-5 pagina-foto">
+                  <Foto src={categoria.foto.src} legenda={categoria.foto.legenda} />
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -710,28 +568,19 @@ function Diferenciais({ onEncomendar }) {
       <h2 id="titulo-dif" className="sr-only">Do nosso jeito</h2>
       <div className="max-w-6xl mx-auto px-5 md:px-8">
         <div className="dif-linha">
-          <div className="dif-texto">
-            <h3 className="t-dif">Seu pet entra junto.</h3>
-            <p>Somos pet friendly: seu pet é muito bem-vindo no nosso espaço.</p>
-          </div>
-          <Pegadas className="dif-ilustra dif-pegadas" />
+          <h3 className="t-dif">Seu pet entra junto.</h3>
+          <p>Somos pet friendly: seu pet é muito bem-vindo no nosso espaço.</p>
         </div>
         <div className="dif-linha dif-linha--inversa">
-          <div className="dif-texto">
-            <h3 className="t-dif">O café é coado na sua mesa.</h3>
-            <p>Quentinho, feito na hora, pra tomar sem pressa.</p>
-          </div>
-          <Xicara className="dif-ilustra dif-xicara" />
+          <h3 className="t-dif">O café é coado na sua mesa.</h3>
+          <p>Quentinho, feito na hora, pra tomar sem pressa.</p>
         </div>
         <div className="dif-linha">
-          <div className="dif-texto">
-            <h3 className="t-dif">O bolo da festa pode sair daqui.</h3>
-            <p>Fazemos encomendas personalizadas de bolos para festas e datas especiais.</p>
-            <button type="button" className="link-sublinhado mt-5" onClick={() => onEncomendar("Bolo especial / comemoração")}>
-              Fazer uma encomenda
-            </button>
-          </div>
-          <BoloConfeitos className="dif-ilustra dif-bolo" />
+          <h3 className="t-dif">O bolo da festa pode sair daqui.</h3>
+          <p>Fazemos encomendas personalizadas de bolos para festas e datas especiais.</p>
+          <button type="button" className="link-sublinhado mt-5" onClick={() => onEncomendar("Bolo especial / comemoração")}>
+            Fazer uma encomenda
+          </button>
         </div>
       </div>
     </section>
@@ -1069,7 +918,7 @@ const ESTILOS = `
 .t-hero,.t-secao,.t-dif,.logo-nome,.rotulo-receita,.pagina-titulo,.item-nome,.pedido-titulo,.horarios-titulo,.pedido-ok-titulo,.endereco,.mm-link{
   font-family:'Young Serif',Georgia,'Times New Roman',serif; font-weight:400;
 }
-.t-hero{font-size:clamp(2.45rem,6.4vw,5.75rem); line-height:1.02; letter-spacing:-.018em; max-width:13ch; text-wrap:balance}
+.t-hero{font-size:clamp(2.45rem,5.2vw,4.5rem); line-height:1.03; letter-spacing:-.018em; text-wrap:balance}
 .t-secao{font-size:clamp(2.05rem,4.4vw,3.4rem); line-height:1.06; letter-spacing:-.012em; text-wrap:balance}
 .t-dif{font-size:clamp(2rem,5vw,3.75rem); line-height:1.03; letter-spacing:-.015em; text-wrap:balance}
 .texto{font-size:1.15rem; color:var(--tinta-suave); max-width:56ch}
@@ -1134,51 +983,27 @@ const ESTILOS = `
 .status--escuro.is-aberto .status-ponto{background:#B8D49A}
 @keyframes pulso{0%{transform:scale(1); opacity:.6} 100%{transform:scale(2.6); opacity:0}}
 
-/* Hero: a folha de receita */
-.folha-wrap{position:relative}
-.folha{--giro:-.8deg; position:relative; z-index:1; background:var(--papel); border-radius:4px; box-shadow:var(--sombra-papel);
-  padding:clamp(1.75rem,5vw,4rem) clamp(1.25rem,5vw,4.5rem) clamp(2.5rem,5vw,4rem);
-  transform:rotate(var(--giro)); animation:assentar .9s cubic-bezier(.2,.8,.25,1) both}
-.fita{position:absolute; top:-13px; width:96px; height:28px; background:rgba(242,201,76,.5); z-index:2}
-.fita-esq{left:8%; transform:rotate(-4deg)}
-.fita-dir{right:8%; transform:rotate(3deg)}
-.folha-sobrescrito{font-size:1.2rem; color:var(--canela)}
-.regua-dupla{border:0; height:5px; margin:.5rem 0 clamp(1.5rem,3.5vw,2.5rem); border-top:1.5px solid var(--oliva); border-bottom:1.5px solid var(--oliva); opacity:.7}
-.rotulo-receita{font-size:1.3rem; color:var(--oliva-escuro); padding-bottom:.55rem; margin-bottom:1rem; border-bottom:1.5px dashed var(--linha-escura)}
-.ingredientes{list-style:none; margin:0; padding:0}
-.ingredientes li{position:relative; padding-left:1.7rem; margin:.55rem 0; font-size:1.13rem; line-height:1.5}
-.ingredientes li::before{content:""; position:absolute; left:.35rem; top:.42em; width:.55rem; height:.9rem; background:var(--oliva);
-  border-radius:0 100% 0 100%; transform:rotate(35deg)}
-.modo{list-style:none; margin:0; padding:0; counter-reset:passo}
-.modo li{position:relative; padding-left:2.4rem; margin:.7rem 0; font-size:1.13rem; line-height:1.5; counter-increment:passo}
-.modo li::before{content:counter(passo); position:absolute; left:0; top:-.15rem; font-family:'Young Serif',Georgia,serif; font-size:1.45rem; color:var(--canela)}
-.hero-xicara{--giro:0deg; position:absolute; z-index:3; width:clamp(108px,15vw,180px); right:clamp(4px,1vw,12px); bottom:-58px;
-  animation:surgir .7s .55s cubic-bezier(.2,.8,.25,1) both}
-.hero-fatia{--giro:4deg; position:absolute; z-index:3; display:none; width:clamp(150px,19vw,236px); right:clamp(12px,4vw,56px); top:-34px;
-  animation:surgir .7s .4s cubic-bezier(.2,.8,.25,1) both}
-.hero-raminho{position:absolute; z-index:0; display:none; width:110px; right:clamp(170px,22vw,280px); top:-62px; transform:rotate(-24deg)}
-@media (min-width:768px){ .hero-fatia,.hero-raminho{display:block} }
-@media (max-width:640px){ .folha{--giro:-.35deg} }
-.vapor path{transform-box:fill-box; transform-origin:center; animation:vapor 3.6s ease-in-out infinite}
-.vapor path:nth-child(2){animation-delay:1.2s}
-.vapor path:nth-child(3){animation-delay:2.4s}
-@keyframes assentar{from{opacity:0; transform:translateY(-18px) rotate(-3deg)} to{opacity:1; transform:rotate(var(--giro))}}
-@keyframes surgir{from{opacity:0; transform:translateY(12px) rotate(var(--giro))} to{opacity:1; transform:rotate(var(--giro))}}
-@keyframes vapor{0%{opacity:0; transform:translateY(8px)} 35%{opacity:1} 100%{opacity:0; transform:translateY(-10px)}}
+/* Hero */
+.hero-sub{margin-top:1.4rem; font-size:clamp(1.15rem,1.6vw,1.3rem); line-height:1.55; color:var(--tinta-suave); max-width:40ch}
+.hero-horario{margin-top:2.25rem; padding-top:1.25rem; border-top:1.5px dashed var(--linha-escura); display:flex; flex-wrap:wrap; align-items:center; gap:.75rem 1.25rem}
+.hero-horario p{font-size:1rem; color:var(--tinta-suave)}
+.hero-foto{position:relative; --giro:1.5deg; transform:rotate(var(--giro)); animation:assentar .9s cubic-bezier(.2,.8,.25,1) both}
+.hero-foto::before{content:""; position:absolute; z-index:2; top:-13px; left:50%; width:110px; height:28px; background:rgba(242,201,76,.55); transform:translateX(-50%) rotate(-3deg)}
+.hero-foto .foto-quadro{aspect-ratio:5/4}
+@keyframes assentar{from{opacity:0; transform:translateY(-14px) rotate(-1.5deg)} to{opacity:1; transform:rotate(var(--giro))}}
 
 /* Seções */
 .secao{padding-block:clamp(4.5rem,9vw,7.5rem)}
 .secao-faixa{background:var(--creme-escuro)}
 
 /* Sobre: galeria de vídeos em molduras de foto */
-.galeria{display:grid; grid-template-columns:1.35fr 1fr; gap:1.5rem 1.25rem; align-items:center}
-.gal-grande{grid-row:span 2; transform:rotate(-1.6deg)}
-.gal-a{transform:rotate(2deg) translateY(-.4rem)}
-.gal-b{transform:rotate(-1.2deg) translateY(.6rem)}
+.galeria{display:grid; grid-template-columns:1.3fr 1fr; gap:1.25rem; align-items:end}
+.gal-grande{transform:rotate(-1.6deg)}
+.gal-a{transform:rotate(2deg) translateY(-2.5rem)}
 .foto{margin:0; background:#FFFDF7; padding:.65rem .65rem 0; box-shadow:var(--sombra-papel)}
 .foto-quadro{position:relative; overflow:hidden; aspect-ratio:4/3; background:#E7DDC6}
 .gal-grande .foto-quadro{aspect-ratio:4/5}
-.foto-quadro video{display:block; width:100%; height:100%; object-fit:cover}
+.foto-quadro video,.foto-quadro img{display:block; width:100%; height:100%; object-fit:cover}
 .foto figcaption{font-size:1.1rem; line-height:1.3; color:var(--canela); text-align:center; padding:.6rem .25rem .75rem}
 .foto-botao{position:absolute; right:.55rem; bottom:.55rem; width:2.35rem; height:2.35rem; display:grid; place-items:center;
   border:0; border-radius:50%; background:rgba(59,52,35,.6); color:var(--papel); cursor:pointer; opacity:.8;
@@ -1186,9 +1011,9 @@ const ESTILOS = `
 .foto-botao:hover,.foto-botao:focus-visible{opacity:1; background:rgba(59,52,35,.85)}
 .foto-botao .icone{width:1rem; height:1rem}
 @media (max-width:767px){
-  .galeria{grid-template-columns:1fr 1fr; gap:1.25rem 1rem}
-  .gal-grande{grid-column:1 / -1; grid-row:auto}
-  .gal-grande .foto-quadro{aspect-ratio:4/3}
+  .galeria{gap:1rem}
+  .gal-grande .foto-quadro,.gal-a .foto-quadro{aspect-ratio:4/5}
+  .gal-a{transform:rotate(2deg) translateY(-1rem)}
 }
 
 /* Cardápio: o caderno */
@@ -1223,21 +1048,17 @@ const ESTILOS = `
   -webkit-box-decoration-break:clone; box-decoration-break:clone}
 .item:hover .grifo,.grifo-fixo{background-size:100% 100%}
 .pagina-acoes{display:flex; flex-wrap:wrap; gap:.75rem; margin-top:var(--lh)}
-.pagina-ilustra{display:flex; align-items:center; justify-content:center; padding-top:var(--lh)}
-.pagina-desenho{width:min(230px,62%); transform:rotate(-5deg)}
-@media (min-width:768px){ .pagina-desenho{width:min(250px,92%)} }
+.pagina-foto{padding-top:var(--lh)}
+.pagina-foto .foto{max-width:360px; margin-inline:auto; transform:rotate(-2.5deg)}
+.pagina-foto .foto-quadro{aspect-ratio:4/5}
+@media (max-width:767px){ .pagina-foto .foto{max-width:300px} .pagina-foto .foto-quadro{aspect-ratio:4/3} }
 
 /* Diferenciais */
-.dif-linha{display:grid; gap:1.75rem; align-items:center; padding-block:clamp(2.5rem,5vw,3.75rem); border-top:1.5px dashed var(--linha-escura)}
+.dif-linha{padding-block:clamp(2.25rem,4.5vw,3.25rem); border-top:1.5px dashed var(--linha-escura)}
 .dif-linha:last-child{border-bottom:1.5px dashed var(--linha-escura)}
-.dif-texto p{font-size:1.18rem; color:var(--tinta-suave); margin-top:.9rem; max-width:44ch}
-.dif-ilustra{justify-self:center; width:min(210px,56%)}
-.dif-pegadas{width:min(360px,88%); color:var(--oliva)}
-@media (min-width:768px){
-  .dif-linha{grid-template-columns:7fr 4fr; gap:3rem}
-  .dif-linha--inversa{grid-template-columns:4fr 7fr}
-  .dif-linha--inversa .dif-texto{order:2}
-}
+.dif-linha > *{max-width:40rem}
+.dif-linha p{font-size:1.18rem; color:var(--tinta-suave); margin-top:.9rem; max-width:44ch}
+@media (min-width:768px){ .dif-linha--inversa > *{margin-left:auto} .dif-linha--inversa p{margin-left:auto} }
 
 /* Encomendas */
 .passos{list-style:none; margin-left:0; padding:0; counter-reset:passo}
@@ -1308,6 +1129,5 @@ textarea.entrada{resize:vertical; min-height:5.5rem; line-height:1.5}
 /* Movimento reduzido */
 @media (prefers-reduced-motion: reduce){
   .dinha *,.dinha *::before,.dinha *::after{animation-duration:.01ms !important; animation-iteration-count:1 !important; transition-duration:.01ms !important}
-  .vapor{display:none}
 }
 `;
