@@ -13,6 +13,7 @@ import { useState, useEffect, useRef } from "react";
      Pode ser trocado por Framer Motion se o projeto já usar.
    - Todo o conteúdo vem das informações fornecidas pela Dinha. O que depende
      de material real está marcado com PENDENTE.
+   - Os vídeos ficam em public/videos e só carregam quando aparecem na tela.
    ========================================================================== */
 
 /* ---------- Dados reais ---------- */
@@ -104,6 +105,13 @@ const MENU = [
     ilustracao: "xicara",
     itens: [{ nome: "Café coado na mesa" }, { nome: "Arroz doce caseiro" }],
   },
+];
+
+// Vídeos da Dinha (arquivos em public/videos)
+const VIDEOS = [
+  { id: "bolo", src: "/videos/bolo-com-cobertura.mp4", capa: "/videos/bolo-com-cobertura.jpg", legenda: "bolo caseiro com cobertura" },
+  { id: "brownie", src: "/videos/brownie.mp4", capa: "/videos/brownie.jpg", legenda: "brownie" },
+  { id: "copos", src: "/videos/copos-de-sobremesa.mp4", capa: "/videos/copos-de-sobremesa.jpg", legenda: "copos de sobremesa" },
 ];
 
 const AVALIACOES = [
@@ -246,6 +254,17 @@ const IconeAlerta = () => (
     <circle cx="12" cy="12" r="8.5" />
     <path d="M12 7.8v5M12 16.2v.01" />
   </Icone>
+);
+const IconePausa = () => (
+  <svg viewBox="0 0 24 24" className="icone" fill="currentColor" aria-hidden="true" focusable="false">
+    <rect x="6.5" y="5.5" width="3.6" height="13" rx="1" />
+    <rect x="13.9" y="5.5" width="3.6" height="13" rx="1" />
+  </svg>
+);
+const IconePlay = () => (
+  <svg viewBox="0 0 24 24" className="icone" fill="currentColor" aria-hidden="true" focusable="false">
+    <path d="M8 5.6v12.8a.8.8 0 0 0 1.2.7l10.2-6.4a.8.8 0 0 0 0-1.4L9.2 4.9A.8.8 0 0 0 8 5.6z" />
+  </svg>
 );
 const NovaAba = () => <span className="sr-only"> (abre em nova aba)</span>;
 
@@ -412,6 +431,55 @@ function StatusAberto({ status, escuro = false, className = "" }) {
   );
 }
 
+// Vídeo curto em moldura de foto: toca sem som quando aparece na tela, pausa ao sair,
+// tem botão de pausar/reproduzir e não toca sozinho para quem prefere menos movimento.
+function VideoFoto({ src, capa, legenda, className = "" }) {
+  const video = useRef(null);
+  const pausadoPelaPessoa = useRef(prefereMenosMovimento());
+  const [tocando, setTocando] = useState(false);
+
+  useEffect(() => {
+    const v = video.current;
+    if (!v) return;
+    v.muted = true;
+    if (!("IntersectionObserver" in window)) return;
+    const io = new IntersectionObserver(
+      ([entrada]) => {
+        if (entrada.isIntersecting && !pausadoPelaPessoa.current) v.play().catch(() => {});
+        if (!entrada.isIntersecting) v.pause();
+      },
+      { threshold: 0.3 }
+    );
+    io.observe(v);
+    return () => io.disconnect();
+  }, []);
+
+  function alternar() {
+    const v = video.current;
+    if (v.paused) {
+      pausadoPelaPessoa.current = false;
+      v.play().catch(() => {});
+    } else {
+      pausadoPelaPessoa.current = true;
+      v.pause();
+    }
+  }
+
+  return (
+    <figure className={`foto ${className}`}>
+      <div className="foto-quadro">
+        <video ref={video} src={src} poster={capa} muted loop playsInline preload="none" aria-hidden="true"
+          onPlaying={() => setTocando(true)} onPause={() => setTocando(false)} />
+        <button type="button" className="foto-botao" onClick={alternar}
+          aria-label={`${tocando ? "Pausar" : "Reproduzir"} vídeo: ${legenda}`}>
+          {tocando ? <IconePausa /> : <IconePlay />}
+        </button>
+      </div>
+      <figcaption className="mao">{legenda}</figcaption>
+    </figure>
+  );
+}
+
 /* ---------- Seções ---------- */
 
 function Cabecalho() {
@@ -536,8 +604,8 @@ function Hero({ status }) {
 function Sobre() {
   return (
     <section id="sobre" className="secao">
-      <div className="max-w-6xl mx-auto px-5 md:px-8 grid md:grid-cols-12 gap-14 md:gap-8 items-center">
-        <div className="md:col-span-6">
+      <div className="max-w-6xl mx-auto px-5 md:px-8 grid md:grid-cols-12 gap-14 md:gap-10 items-center">
+        <div className="md:col-span-5">
           <h2 className="t-secao">A casa da Dinha</h2>
           <div className="texto mt-6">
             <p>
@@ -551,15 +619,13 @@ function Sobre() {
           </div>
           {/* PENDENTE: história real da Dinha (quem é, como começou). Não foi inventada aqui. */}
         </div>
-        <div className="md:col-span-5 md:col-start-8">
-          {/* PENDENTE: trocar a ilustração por uma foto real do salão ou da mesa */}
-          <figure className="polaroid">
-            <div className="toalha">
-              <FatiaBolo className="polaroid-fatia" />
-              <Xicara className="polaroid-xicara" />
-            </div>
-            <figcaption className="mao">café coado na mesa e bolo no prato</figcaption>
-          </figure>
+        <div className="md:col-span-7">
+          <div className="galeria">
+            {VIDEOS.map((v, i) => (
+              <VideoFoto key={v.id} src={v.src} capa={v.capa} legenda={v.legenda}
+                className={["gal-grande", "gal-a", "gal-b"][i]} />
+            ))}
+          </div>
         </div>
       </div>
     </section>
@@ -1104,14 +1170,26 @@ const ESTILOS = `
 .secao{padding-block:clamp(4.5rem,9vw,7.5rem)}
 .secao-faixa{background:var(--creme-escuro)}
 
-/* Sobre */
-.polaroid{margin:0 auto; max-width:420px; background:#FFFDF7; padding:.85rem .85rem 0; box-shadow:var(--sombra-papel); transform:rotate(2deg)}
-.toalha{position:relative; aspect-ratio:5/4; overflow:hidden; background-color:#F4E9D6;
-  background-image:linear-gradient(rgba(122,138,98,.3) 50%,transparent 50%),linear-gradient(90deg,rgba(122,138,98,.3) 50%,transparent 50%);
-  background-size:32px 32px}
-.polaroid-fatia{position:absolute; width:56%; left:6%; bottom:10%}
-.polaroid-xicara{position:absolute; width:37%; right:6%; bottom:11%}
-.polaroid figcaption{font-size:1.2rem; color:var(--canela); text-align:center; padding:.9rem .25rem 1.05rem}
+/* Sobre: galeria de vídeos em molduras de foto */
+.galeria{display:grid; grid-template-columns:1.35fr 1fr; gap:1.5rem 1.25rem; align-items:center}
+.gal-grande{grid-row:span 2; transform:rotate(-1.6deg)}
+.gal-a{transform:rotate(2deg) translateY(-.4rem)}
+.gal-b{transform:rotate(-1.2deg) translateY(.6rem)}
+.foto{margin:0; background:#FFFDF7; padding:.65rem .65rem 0; box-shadow:var(--sombra-papel)}
+.foto-quadro{position:relative; overflow:hidden; aspect-ratio:4/3; background:#E7DDC6}
+.gal-grande .foto-quadro{aspect-ratio:4/5}
+.foto-quadro video{display:block; width:100%; height:100%; object-fit:cover}
+.foto figcaption{font-size:1.1rem; line-height:1.3; color:var(--canela); text-align:center; padding:.6rem .25rem .75rem}
+.foto-botao{position:absolute; right:.55rem; bottom:.55rem; width:2.35rem; height:2.35rem; display:grid; place-items:center;
+  border:0; border-radius:50%; background:rgba(59,52,35,.6); color:var(--papel); cursor:pointer; opacity:.8;
+  transition:opacity .2s ease,background-color .2s ease}
+.foto-botao:hover,.foto-botao:focus-visible{opacity:1; background:rgba(59,52,35,.85)}
+.foto-botao .icone{width:1rem; height:1rem}
+@media (max-width:767px){
+  .galeria{grid-template-columns:1fr 1fr; gap:1.25rem 1rem}
+  .gal-grande{grid-column:1 / -1; grid-row:auto}
+  .gal-grande .foto-quadro{aspect-ratio:4/3}
+}
 
 /* Cardápio: o caderno */
 .caderno-wrap{margin-top:clamp(2.25rem,4vw,3rem)}
