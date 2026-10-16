@@ -57,13 +57,20 @@ const TIPOS_ENCOMENDA = [
   "Outro",
 ];
 
+// Vídeos da Dinha (arquivos em public/videos)
+const VIDEOS = {
+  bolo: { src: "/videos/bolo-com-cobertura.mp4", capa: "/videos/bolo-com-cobertura.jpg", legenda: "bolo caseiro com cobertura" },
+  copos: { src: "/videos/copos-de-sobremesa.mp4", capa: "/videos/copos-de-sobremesa.jpg", legenda: "copos de sobremesa" },
+  brownie: { src: "/videos/brownie.mp4", capa: "/videos/brownie.jpg", legenda: "brownie" },
+};
+
 const MENU = [
   {
     id: "tradicionais",
     aba: "Bolos tradicionais",
     titulo: "Bolos tradicionais",
     nota: "os clássicos de toda tarde",
-    foto: { src: "/fotos/bolo-com-cobertura.jpg", legenda: "bolo caseiro com cobertura" },
+    video: VIDEOS.bolo,
     itens: [
       { nome: "Bolo de laranja" },
       { nome: "Bolo de limão" },
@@ -90,7 +97,7 @@ const MENU = [
     aba: "Comidinhas",
     titulo: "Comidinhas e salgados",
     nota: "pro almoço rápido ou o lanche",
-    // PENDENTE: foto real da torta de frango com salada
+    foto: { src: "/fotos/torta-de-frango.jpg", legenda: "torta de frango com salada" },
     itens: [
       { nome: "Torta de frango com salada", detalhe: "boa pedida pro almoço" },
       { nome: "Tortas recheadas" },
@@ -102,7 +109,7 @@ const MENU = [
     aba: "Doces e cafés",
     titulo: "Doces e cafés",
     nota: "coado na hora, servido na mesa",
-    foto: { src: "/fotos/copos-de-sobremesa.jpg", legenda: "copos de sobremesa da Dinha" },
+    video: { ...VIDEOS.copos, legenda: "copos de sobremesa da Dinha" },
     itens: [
       { nome: "Copos de sobremesa" },
       { nome: "Brownie" },
@@ -111,13 +118,6 @@ const MENU = [
     ],
   },
 ];
-
-// Vídeos da Dinha (arquivos em public/videos)
-const VIDEOS = {
-  bolo: { src: "/videos/bolo-com-cobertura.mp4", capa: "/videos/bolo-com-cobertura.jpg", legenda: "bolo caseiro com cobertura" },
-  copos: { src: "/videos/copos-de-sobremesa.mp4", capa: "/videos/copos-de-sobremesa.jpg", legenda: "copos de sobremesa" },
-  brownie: { src: "/videos/brownie.mp4", capa: "/videos/brownie.jpg", legenda: "brownie" },
-};
 
 const AVALIACOES = [
   "Lugar tranquilo, decoração maravilhosa, café coado na mesa, uma delícia!",
@@ -433,8 +433,10 @@ function Cabecalho() {
 function Hero({ status }) {
   return (
     <section id="inicio" className="hero">
-      <div className="max-w-6xl mx-auto px-5 md:px-8 pt-8 md:pt-16 pb-20 md:pb-28 grid md:grid-cols-12 gap-12 md:gap-10 items-center">
-        <div className="md:col-span-6 hero-texto">
+      {/* Fachada da Dinha ao fundo, dissolvendo no bege da página */}
+      <div className="hero-fundo" aria-hidden="true" />
+      <div className="max-w-6xl mx-auto px-5 md:px-8 hero-conteudo">
+        <div className="hero-texto">
           <h1 className="t-hero">O aconchego e o sabor da casa da vó em Osasco</h1>
           <p className="hero-sub">
             Café coado na hora, bolo caseiro fresquinho e receitas afetivas, num cantinho tranquilo da Cidade São
@@ -451,9 +453,6 @@ function Hero({ status }) {
             <StatusAberto status={status} />
             <p>Terça a sexta, das 9h às 18h. Sábado, das 9h às 17h.</p>
           </div>
-        </div>
-        <div className="md:col-span-6">
-          <VideoFoto className="hero-foto" {...VIDEOS.bolo} />
         </div>
       </div>
     </section>
@@ -480,7 +479,7 @@ function Sobre() {
         </div>
         <div className="md:col-span-7">
           <div className="galeria">
-            <VideoFoto className="gal-grande" {...VIDEOS.copos} />
+            <Foto className="gal-grande" src="/fotos/cafe-coado.jpg" legenda="café coado na mesa" />
             <VideoFoto className="gal-a" {...VIDEOS.brownie} />
           </div>
         </div>
@@ -526,7 +525,7 @@ function Cardapio({ onEncomendar }) {
 
           <div role="tabpanel" id={`painel-${categoria.id}`} aria-labelledby={`aba-${categoria.id}`} tabIndex={0} className="caderno">
             <div key={categoria.id} className="pagina grid md:grid-cols-12 gap-x-6">
-              <div className={categoria.foto ? "md:col-span-7" : "md:col-span-12"}>
+              <div className={categoria.foto || categoria.video ? "md:col-span-7" : "md:col-span-12"}>
                 <h3 className="pagina-titulo">{categoria.titulo}</h3>
                 <p className="pagina-nota mao">{categoria.nota}</p>
                 <ul className="itens">
@@ -549,9 +548,9 @@ function Cardapio({ onEncomendar }) {
                   )}
                 </div>
               </div>
-              {categoria.foto && (
+              {(categoria.foto || categoria.video) && (
                 <div className="md:col-span-5 pagina-foto">
-                  <Foto src={categoria.foto.src} legenda={categoria.foto.legenda} />
+                  {categoria.video ? <VideoFoto {...categoria.video} /> : <Foto {...categoria.foto} />}
                 </div>
               )}
             </div>
@@ -918,7 +917,7 @@ const ESTILOS = `
 .t-hero,.t-secao,.t-dif,.logo-nome,.rotulo-receita,.pagina-titulo,.item-nome,.pedido-titulo,.horarios-titulo,.pedido-ok-titulo,.endereco,.mm-link{
   font-family:'Young Serif',Georgia,'Times New Roman',serif; font-weight:400;
 }
-.t-hero{font-size:clamp(2.45rem,5.2vw,4.5rem); line-height:1.03; letter-spacing:-.018em; text-wrap:balance}
+.t-hero{font-size:clamp(2.45rem,5.6vw,4.9rem); line-height:1.03; letter-spacing:-.018em; text-wrap:balance}
 .t-secao{font-size:clamp(2.05rem,4.4vw,3.4rem); line-height:1.06; letter-spacing:-.012em; text-wrap:balance}
 .t-dif{font-size:clamp(2rem,5vw,3.75rem); line-height:1.03; letter-spacing:-.015em; text-wrap:balance}
 .texto{font-size:1.15rem; color:var(--tinta-suave); max-width:56ch}
@@ -983,26 +982,35 @@ const ESTILOS = `
 .status--escuro.is-aberto .status-ponto{background:#B8D49A}
 @keyframes pulso{0%{transform:scale(1); opacity:.6} 100%{transform:scale(2.6); opacity:0}}
 
-/* Hero */
+/* Hero: fachada ao fundo com degradê para o bege */
+.hero{position:relative; isolation:isolate; overflow:hidden}
+.hero-fundo{position:absolute; z-index:-1; left:0; right:0; top:0; height:clamp(32rem,90vh,58rem);
+  background:url('/fotos/fachada.jpg') center 18%/cover no-repeat}
+.hero-fundo::after{content:""; position:absolute; inset:0;
+  background:linear-gradient(180deg, rgba(247,236,210,0) 0%, rgba(247,236,210,.05) 22%, rgba(247,236,210,.78) 40%, rgba(247,236,210,.94) 52%, var(--creme) 72%)}
+.hero-conteudo{padding-top:clamp(15rem,40vh,23rem); padding-bottom:clamp(4.5rem,8vw,6.5rem)}
+.hero-texto{max-width:42rem; animation:surgir .8s cubic-bezier(.2,.8,.25,1) both}
 .hero-sub{margin-top:1.4rem; font-size:clamp(1.15rem,1.6vw,1.3rem); line-height:1.55; color:var(--tinta-suave); max-width:40ch}
 .hero-horario{margin-top:2.25rem; padding-top:1.25rem; border-top:1.5px dashed var(--linha-escura); display:flex; flex-wrap:wrap; align-items:center; gap:.75rem 1.25rem}
 .hero-horario p{font-size:1rem; color:var(--tinta-suave)}
-.hero-foto{position:relative; --giro:1.5deg; transform:rotate(var(--giro)); animation:assentar .9s cubic-bezier(.2,.8,.25,1) both}
-.hero-foto::before{content:""; position:absolute; z-index:2; top:-13px; left:50%; width:110px; height:28px; background:rgba(242,201,76,.55); transform:translateX(-50%) rotate(-3deg)}
-.hero-foto .foto-quadro{aspect-ratio:5/4}
-@keyframes assentar{from{opacity:0; transform:translateY(-14px) rotate(-1.5deg)} to{opacity:1; transform:rotate(var(--giro))}}
+@media (max-width:767px){
+  .hero-fundo{height:72vh; background-image:url('/fotos/fachada-celular.jpg'); background-position:center top}
+  .hero-conteudo{padding-top:36vh}
+}
+@keyframes surgir{from{opacity:0; transform:translateY(12px)} to{opacity:1; transform:none}}
 
 /* Seções */
 .secao{padding-block:clamp(4.5rem,9vw,7.5rem)}
 .secao-faixa{background:var(--creme-escuro)}
 
 /* Sobre: galeria de vídeos em molduras de foto */
-.galeria{display:grid; grid-template-columns:1.3fr 1fr; gap:1.25rem; align-items:end}
+.galeria{display:grid; grid-template-columns:1.5fr 1fr; gap:1.25rem; align-items:center}
 .gal-grande{transform:rotate(-1.6deg)}
 .gal-a{transform:rotate(2deg) translateY(-2.5rem)}
 .foto{margin:0; background:#FFFDF7; padding:.65rem .65rem 0; box-shadow:var(--sombra-papel)}
 .foto-quadro{position:relative; overflow:hidden; aspect-ratio:4/3; background:#E7DDC6}
-.gal-grande .foto-quadro{aspect-ratio:4/5}
+.gal-grande .foto-quadro{aspect-ratio:4/3}
+.gal-a .foto-quadro{aspect-ratio:4/5}
 .foto-quadro video,.foto-quadro img{display:block; width:100%; height:100%; object-fit:cover}
 .foto figcaption{font-size:1.1rem; line-height:1.3; color:var(--canela); text-align:center; padding:.6rem .25rem .75rem}
 .foto-botao{position:absolute; right:.55rem; bottom:.55rem; width:2.35rem; height:2.35rem; display:grid; place-items:center;
@@ -1012,8 +1020,8 @@ const ESTILOS = `
 .foto-botao .icone{width:1rem; height:1rem}
 @media (max-width:767px){
   .galeria{gap:1rem}
-  .gal-grande .foto-quadro,.gal-a .foto-quadro{aspect-ratio:4/5}
-  .gal-a{transform:rotate(2deg) translateY(-1rem)}
+  .galeria{grid-template-columns:1fr; max-width:420px; margin-inline:auto}
+  .gal-a{width:70%; justify-self:end; transform:rotate(2deg)}
 }
 
 /* Cardápio: o caderno */
@@ -1050,7 +1058,7 @@ const ESTILOS = `
 .pagina-acoes{display:flex; flex-wrap:wrap; gap:.75rem; margin-top:var(--lh)}
 .pagina-foto{padding-top:var(--lh)}
 .pagina-foto .foto{max-width:360px; margin-inline:auto; transform:rotate(-2.5deg)}
-.pagina-foto .foto-quadro{aspect-ratio:4/5}
+.pagina-foto .foto-quadro{aspect-ratio:1/1}
 @media (max-width:767px){ .pagina-foto .foto{max-width:300px} .pagina-foto .foto-quadro{aspect-ratio:4/3} }
 
 /* Diferenciais */
