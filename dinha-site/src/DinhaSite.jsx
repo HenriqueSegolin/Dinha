@@ -254,6 +254,54 @@ const IconePlay = () => (
 );
 const NovaAba = () => <span className="sr-only"> (abre em nova aba)</span>;
 
+/* ---------- Ilustração do gatinho e do cachorrinho (seção pet friendly) ---------- */
+
+function IlustracaoPets({ className = "" }) {
+  return (
+    <svg viewBox="20 40 290 175" className={className} aria-hidden="true" focusable="false">
+      <g stroke="#3B3423" strokeWidth="3" strokeLinejoin="round" strokeLinecap="round">
+      <ellipse cx="162" cy="203" rx="128" ry="7" fill="#3B3423" fillOpacity=".12" stroke="none"/>
+      {/* cachorrinho caramelo */}
+      <path d="M140 182C166 180 180 160 174 140c-1.5-5-8-4-7 1.5 3.5 15-7 27-28 29z" fill="#D9A867"/>
+      <path d="M58 200c-8-40 4-80 42-84 38 4 50 44 42 84z" fill="#D9A867"/>
+      <path d="M86 128c4 22 24 22 28 0-8-5-20-5-28 0z" fill="#F4E6C8" stroke="none"/>
+      <path d="M84 200c0-14 2-27 4-38M116 200c0-14-2-27-4-38" fill="none"/>
+      <ellipse cx="82" cy="199" rx="11" ry="5" fill="#D9A867"/>
+      <ellipse cx="118" cy="199" rx="11" ry="5" fill="#D9A867"/>
+      <ellipse cx="100" cy="90" rx="34" ry="31" fill="#D9A867"/>
+      <path d="M71 74c-15 5-18 32-6 40 9-5 11-23 13-33z" fill="#B07D45"/>
+      <path d="M129 74c15 5 18 32 6 40-9-5-11-23-13-33z" fill="#B07D45"/>
+      <ellipse cx="100" cy="103" rx="16" ry="11" fill="#F4E6C8"/>
+      <path d="M97 109c0 8 6 8 6 0z" fill="#E0A0A0" strokeWidth="2"/>
+      <path d="M100 101v5M100 106c-4 4-8 3-10 0M100 106c4 4 8 3 10 0" fill="none" strokeWidth="2.4"/>
+      <ellipse cx="100" cy="97.5" rx="6" ry="4.5" fill="#3B3423"/>
+      <circle cx="88" cy="85" r="3.8" fill="#3B3423" stroke="none"/>
+      <circle cx="112" cy="85" r="3.8" fill="#3B3423" stroke="none"/>
+      <circle cx="89.3" cy="83.7" r="1.2" fill="#FFF9EC" stroke="none"/>
+      <circle cx="113.3" cy="83.7" r="1.2" fill="#FFF9EC" stroke="none"/>
+      {/* gatinho */}
+      <path d="M258 198c32 0 42-26 30-48-3-6-10-3-7 3 8 15 3 33-23 35z" fill="#8C8576"/>
+      <path d="M192 200c-6-35 6-68 33-72 27 4 39 37 33 72z" fill="#8C8576"/>
+      <path d="M212 150c2 25 24 25 26 0-6-10-20-10-26 0z" fill="#F4E6C8" stroke="none"/>
+      <path d="M213 200c0-12 1-22 3-30M237 200c0-12-1-22-3-30" fill="none"/>
+      <ellipse cx="212" cy="199" rx="10" ry="5" fill="#8C8576"/>
+      <ellipse cx="238" cy="199" rx="10" ry="5" fill="#8C8576"/>
+      <path d="M200 94l-3-28 20 15zM250 94l3-28-20 15z" fill="#8C8576"/>
+      <path d="M202.5 85l-1.5-13 10 8.5zM247.5 85l1.5-13-10 8.5z" fill="#E0A0A0" stroke="none"/>
+      <ellipse cx="225" cy="104" rx="30" ry="26" fill="#8C8576"/>
+      <path d="M225 80v7M218.5 81.5l1.5 6M231.5 81.5l-1.5 6" fill="none" stroke="#5E584B" strokeWidth="2.4"/>
+      <ellipse cx="214" cy="101" rx="4.6" ry="5.4" fill="#C9C46A" strokeWidth="2"/>
+      <ellipse cx="236" cy="101" rx="4.6" ry="5.4" fill="#C9C46A" strokeWidth="2"/>
+      <ellipse cx="214" cy="101" rx="1.3" ry="3.8" fill="#3B3423" stroke="none"/>
+      <ellipse cx="236" cy="101" rx="1.3" ry="3.8" fill="#3B3423" stroke="none"/>
+      <path d="M221.5 110h7l-3.5 4z" fill="#E0A0A0" strokeWidth="1.6"/>
+      <path d="M225 114c-2 4-6 4-7 2M225 114c2 4 6 4 7 2" fill="none" strokeWidth="2"/>
+      <path d="M207 111l-18-4M207 115l-17 2M243 111l18-4M243 115l17 2" fill="none" strokeWidth="1.6"/>
+      </g>
+    </svg>
+  );
+}
+
 /* ---------- Estrelas da avaliação ---------- */
 
 function Estrelas({ valor, className = "" }) {
@@ -479,8 +527,7 @@ function Sobre() {
         </div>
         <div className="md:col-span-7">
           <div className="galeria">
-            <Foto className="gal-grande" src="/fotos/cafe-coado.jpg" legenda="café coado na mesa" />
-            <VideoFoto className="gal-a" {...VIDEOS.brownie} />
+            <VideoFoto className="gal-unica" {...VIDEOS.brownie} />
           </div>
         </div>
       </div>
@@ -567,19 +614,34 @@ function Diferenciais({ onEncomendar }) {
       <h2 id="titulo-dif" className="sr-only">Do nosso jeito</h2>
       <div className="max-w-6xl mx-auto px-5 md:px-8">
         <div className="dif-linha">
-          <h3 className="t-dif">Seu pet entra junto.</h3>
-          <p>Somos pet friendly: seu pet é muito bem-vindo no nosso espaço.</p>
+          <div className="dif-texto">
+            <h3 className="t-dif">Seu pet entra junto.</h3>
+            <p>Somos pet friendly: seu pet é muito bem-vindo no nosso espaço.</p>
+          </div>
+          <div className="dif-midia">
+            <IlustracaoPets className="dif-pets" />
+          </div>
         </div>
         <div className="dif-linha dif-linha--inversa">
-          <h3 className="t-dif">O café é coado na sua mesa.</h3>
-          <p>Quentinho, feito na hora, pra tomar sem pressa.</p>
+          <div className="dif-texto">
+            <h3 className="t-dif">O café é coado na sua mesa.</h3>
+            <p>Quentinho, feito na hora, pra tomar sem pressa.</p>
+          </div>
+          <div className="dif-midia">
+            <Foto className="dif-foto" src="/fotos/cafe-coado.jpg" legenda="café coado na mesa" />
+          </div>
         </div>
         <div className="dif-linha">
-          <h3 className="t-dif">O bolo da festa pode sair daqui.</h3>
-          <p>Fazemos encomendas personalizadas de bolos para festas e datas especiais.</p>
-          <button type="button" className="link-sublinhado mt-5" onClick={() => onEncomendar("Bolo especial / comemoração")}>
-            Fazer uma encomenda
-          </button>
+          <div className="dif-texto">
+            <h3 className="t-dif">O bolo da festa pode sair daqui.</h3>
+            <p>Fazemos encomendas personalizadas de bolos para festas e datas especiais.</p>
+            <button type="button" className="link-sublinhado mt-5" onClick={() => onEncomendar("Bolo especial / comemoração")}>
+              Fazer uma encomenda
+            </button>
+          </div>
+          <div className="dif-midia">
+            <Foto className="dif-foto dif-foto--quadrada" src="/fotos/bolo-de-nutella.jpg" legenda="bolo de Nutella" />
+          </div>
         </div>
       </div>
     </section>
@@ -1003,14 +1065,12 @@ const ESTILOS = `
 .secao{padding-block:clamp(4.5rem,9vw,7.5rem)}
 .secao-faixa{background:var(--creme-escuro)}
 
-/* Sobre: galeria de vídeos em molduras de foto */
-.galeria{display:grid; grid-template-columns:1.5fr 1fr; gap:1.25rem; align-items:center}
-.gal-grande{transform:rotate(-1.6deg)}
-.gal-a{transform:rotate(2deg) translateY(-2.5rem)}
+/* Sobre: vídeo em moldura de foto */
+.galeria{max-width:400px; margin-inline:auto}
+.gal-unica{transform:rotate(2deg)}
+.gal-unica .foto-quadro{aspect-ratio:4/5}
 .foto{margin:0; background:#FFFDF7; padding:.65rem .65rem 0; box-shadow:var(--sombra-papel)}
 .foto-quadro{position:relative; overflow:hidden; aspect-ratio:4/3; background:#E7DDC6}
-.gal-grande .foto-quadro{aspect-ratio:4/3}
-.gal-a .foto-quadro{aspect-ratio:4/5}
 .foto-quadro video,.foto-quadro img{display:block; width:100%; height:100%; object-fit:cover}
 .foto figcaption{font-size:1.1rem; line-height:1.3; color:var(--canela); text-align:center; padding:.6rem .25rem .75rem}
 .foto-botao{position:absolute; right:.55rem; bottom:.55rem; width:2.35rem; height:2.35rem; display:grid; place-items:center;
@@ -1018,11 +1078,7 @@ const ESTILOS = `
   transition:opacity .2s ease,background-color .2s ease}
 .foto-botao:hover,.foto-botao:focus-visible{opacity:1; background:rgba(59,52,35,.85)}
 .foto-botao .icone{width:1rem; height:1rem}
-@media (max-width:767px){
-  .galeria{gap:1rem}
-  .galeria{grid-template-columns:1fr; max-width:420px; margin-inline:auto}
-  .gal-a{width:70%; justify-self:end; transform:rotate(2deg)}
-}
+@media (max-width:767px){ .galeria{max-width:320px} }
 
 /* Cardápio: o caderno */
 .caderno-wrap{margin-top:clamp(2.25rem,4vw,3rem)}
@@ -1062,11 +1118,21 @@ const ESTILOS = `
 @media (max-width:767px){ .pagina-foto .foto{max-width:300px} .pagina-foto .foto-quadro{aspect-ratio:4/3} }
 
 /* Diferenciais */
-.dif-linha{padding-block:clamp(2.25rem,4.5vw,3.25rem); border-top:1.5px dashed var(--linha-escura)}
+.dif-linha{display:grid; gap:2rem; align-items:center; padding-block:clamp(2.5rem,5vw,3.75rem); border-top:1.5px dashed var(--linha-escura)}
 .dif-linha:last-child{border-bottom:1.5px dashed var(--linha-escura)}
-.dif-linha > *{max-width:40rem}
-.dif-linha p{font-size:1.18rem; color:var(--tinta-suave); margin-top:.9rem; max-width:44ch}
-@media (min-width:768px){ .dif-linha--inversa > *{margin-left:auto} .dif-linha--inversa p{margin-left:auto} }
+.dif-texto p{font-size:1.18rem; color:var(--tinta-suave); margin-top:.9rem; max-width:44ch}
+.dif-midia{justify-self:center; width:100%; max-width:360px}
+.dif-pets{display:block; width:100%; height:auto}
+.dif-foto{transform:rotate(-2deg)}
+.dif-linha--inversa .dif-foto{transform:rotate(2deg)}
+.dif-foto .foto-quadro{aspect-ratio:3/2}
+.dif-foto--quadrada .foto-quadro{aspect-ratio:1/1}
+@media (min-width:768px){
+  .dif-linha{grid-template-columns:7fr 5fr; gap:3.5rem}
+  .dif-linha--inversa{grid-template-columns:5fr 7fr}
+  .dif-linha--inversa .dif-texto{order:2}
+}
+@media (max-width:767px){ .dif-midia{max-width:300px} }
 
 /* Encomendas */
 .passos{list-style:none; margin-left:0; padding:0; counter-reset:passo}
